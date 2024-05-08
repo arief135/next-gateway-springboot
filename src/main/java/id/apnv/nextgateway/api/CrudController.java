@@ -22,7 +22,7 @@ public abstract class CrudController<T, ID> {
         this.service = service;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public Iterable<T> getAll() {
         return service.getAll();
     }
@@ -34,7 +34,7 @@ public abstract class CrudController<T, ID> {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping()
     public T create(@RequestBody T entity) {
         return service.create(entity);
     }
