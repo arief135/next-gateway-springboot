@@ -22,10 +22,6 @@ public class UserInfo extends ManagedEntity {
         this.active = active;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
