@@ -1,10 +1,10 @@
-package id.apnv.nextgatewayspringboot;
+package id.apnv.nextgateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NextGatewaySpringbootApplicationTests {
+class NextGatewayApplicationTests {
 
 	@Test
 	void contextLoads() {
