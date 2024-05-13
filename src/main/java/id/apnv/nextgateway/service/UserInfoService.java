@@ -11,4 +11,10 @@ public class UserInfoService extends CrudService<UserInfo, String> {
     public UserInfoService(UserInfoRepository userInfoRepository) {
         super(userInfoRepository);
     }
+
+    @Override
+    public UserInfo create(UserInfo entity) {
+        entity.setCreateDefaults();
+        return super.create(entity);
+    }
 }
