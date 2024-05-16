@@ -41,5 +41,9 @@ public class UserInfo extends ManagedEntity {
     public void setLastLoggedIn(Timestamp lastLoggedIn) {
         this.lastLoggedIn = lastLoggedIn;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }
 
