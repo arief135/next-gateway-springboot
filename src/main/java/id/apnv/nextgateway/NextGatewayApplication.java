@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import id.apnv.nextgateway.entity.UserInfo;
 import id.apnv.nextgateway.entity.UserInfoRepository;
-import id.apnv.nextgateway.service.UserInfoService;
 
 @SpringBootApplication
 public class NextGatewayApplication {
