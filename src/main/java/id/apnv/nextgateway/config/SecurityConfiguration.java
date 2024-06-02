@@ -1,4 +1,4 @@
-package id.apnv.nextgateway.security;
+package id.apnv.nextgateway.config;
 
 import java.util.Arrays;
 import java.util.Optional;
