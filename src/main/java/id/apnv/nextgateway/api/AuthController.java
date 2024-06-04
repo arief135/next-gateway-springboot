@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import id.apnv.nextgateway.api.payload.LoginDto;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("${apiPrefix}/auth")
 public class AuthController {
 
     @Autowired
