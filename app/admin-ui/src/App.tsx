@@ -1,9 +1,10 @@
-import { createContext, useState } from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { createContext, useEffect, useState } from 'react';
+import { Routes, Route, BrowserRouter, Navigate, useNavigate } from 'react-router-dom';
 import Login from './Login';
 import Layout from './Layout';
-import { setTheme } from '@ui5/webcomponents-base/dist/config/Theme.js';
 import '@ui5/webcomponents-react/dist/Assets';
+import { User } from './components/User';
+import { isAuthenticated } from './services/Auth.service';
 
 const defaultTheme = "sap_horizon";
 
@@ -16,7 +17,7 @@ const themes = [
     { key: "sap_horizon_hcw", name: "Horizon High Contrast White" },
 ];
 
-function App() {
+export default function App() {
 
     const [theme, setThemeState] = useState(defaultTheme);
 
@@ -27,7 +28,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout />}>
-                        <Route path='users' element={<Users />} />
+                        <Route path='users' element={<User />} />
                     </Route>
                     <Route path="/login" element={<Login />} />
                 </Routes>
@@ -35,11 +36,3 @@ function App() {
         </ThemeContext.Provider>
     );
 }
-
-function Users() {
-    return (
-        <div>users</div>
-    )
-}
-
-export default App;

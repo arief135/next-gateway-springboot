@@ -1,39 +1,32 @@
 import { Button, FlexBox, FlexBoxDirection, Icon, Input, Title, Toast } from "@ui5/webcomponents-react";
-import axios from "axios";
-import { Navigate } from "react-router-dom";
-import { useRef } from "react";
-import { useToken } from "./Auth";
+import { useNavigate } from "react-router-dom";
+import { SyntheticEvent, useRef } from "react";
+import { login } from "./services/Auth.service";
 import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js"
 import "@ui5/webcomponents-icons/dist/account.js"
 import "@ui5/webcomponents-icons/dist/key.js"
+import axios from "axios";
 
 export default function Login() {
 
-    const { token, setToken } = useToken()
+    const navigate = useNavigate()
+
     const toast = useRef(null)
 
-    if (token) {
-        return <Navigate to="/" />
-    }
-
-    const onLogin = async (e: any) => {
+    const onLogin = async (e: SyntheticEvent) => {
         e.preventDefault()
 
-        const u = document.getElementById('username') as any
-        const p = document.getElementById('password') as any
+        const username = (document.getElementById('username') as any).value
+        const password = (document.getElementById('password') as any).value
 
-        try {
-            const res = await axios.post('/auth/login', {
-                username: u.value,
-                password: p.value
-            })
+        const loginResult = await login(username, password)
 
-            if (res.data) {
-                setToken(res.data.access_token)
+        if (loginResult.status == 200) {
+            axios.defaults.auth = {
+                username: username,
+                password: password
             }
-        } catch (error) {
-            // toast.current.innerHTML = error
-            // toast.current.show()
+            navigate('/')
         }
     }
 

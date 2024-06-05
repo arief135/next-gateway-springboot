@@ -1,4 +1,10 @@
+import axios from "axios";
 import { useState } from "react";
+
+// axios.defaults.auth = {
+//     username: 'admin',
+//     password: 'admin'
+// }
 
 export function useToken() {
 
@@ -28,5 +34,17 @@ export function useToken() {
         token,
         clearToken
     }
+}
 
+export function login(username: string, password: string) {
+    return axios.post('/api/auth/login', { username, password })
+}
+
+export async function isAuthenticated() {
+    try {
+        await axios.get('/api/me', { withCredentials: true });
+        return true
+    } catch (error) {
+        return false
+    }
 }
