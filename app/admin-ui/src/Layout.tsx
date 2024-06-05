@@ -43,7 +43,7 @@ function Layout() {
                 alt={'UI5 Web Components for React logo'}
               />
             }
-            primaryTitle="UI5 Web Components for React Template"
+            primaryTitle="Admin Dashboard"
             profile={<Avatar icon={employeeIcon} />}
           />
         </div>
