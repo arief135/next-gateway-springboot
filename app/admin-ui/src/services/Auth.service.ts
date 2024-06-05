@@ -37,7 +37,7 @@ export function useToken() {
 }
 
 export function login(username: string, password: string) {
-    return axios.post('/api/auth/login', { username, password })
+    return axios.post('/auth/login', { username, password })
 }
 
 export async function isAuthenticated() {

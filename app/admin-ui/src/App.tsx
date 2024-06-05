@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import Layout from './Layout';
 import '@ui5/webcomponents-react/dist/Assets';
