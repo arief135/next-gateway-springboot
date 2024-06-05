@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/me")
+@RequestMapping("${apiPrefix}/me")
 public class MeController {
 
     @GetMapping

@@ -40,4 +40,20 @@ public abstract class ManagedEntity {
         return changedBy;
     }
 
+    public void setCreateAt(Timestamp createAt) {
+        this.createAt = createAt;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setChangedAt(Timestamp changedAt) {
+        this.changedAt = changedAt;
+    }
+
+    public void setChangedBy(String changedBy) {
+        this.changedBy = changedBy;
+    }
+
 }
