@@ -33,4 +33,5 @@ build/
 .vscode/
 
 ## Nodejs App ###
+node_modules/
 app/*/node_modules/
