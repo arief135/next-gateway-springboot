@@ -4,6 +4,7 @@ import Login from './Login';
 import Layout from './Layout';
 import '@ui5/webcomponents-react/dist/Assets';
 import { User } from './components/User';
+import { Endpoint, EndpointCreate } from './components/Endpoint';
 
 const defaultTheme = "sap_horizon";
 
@@ -27,6 +28,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route path='users' element={<User />} />
+                    <Route path='endpoints' element={<Endpoint />} />
+                    <Route path='endpoints/create' element={<EndpointCreate />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
             </Routes>

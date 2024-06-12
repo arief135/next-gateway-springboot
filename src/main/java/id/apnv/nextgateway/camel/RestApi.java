@@ -10,19 +10,17 @@ public class RestApi extends RouteBuilder {
     @Override
     public void configure() {
 
-        // restConfiguration().enableCORS(true).component("servlet")
-        //         .bindingMode(RestBindingMode.json);
+        restConfiguration().enableCORS(true).component("servlet")
+                .bindingMode(RestBindingMode.json);
 
-        // rest("/say")
-        //         .get("/hello").to("direct:hello")
-        //         .get("/bye").consumes("application/json").to("direct:bye")
-        //         .post("/bye").to("mock:update");
+        rest("/rest")
+                .get().to("direct:restGet")
+                .post().to("direct:restPost");
 
-        // from("direct:hello")
-        //         .transform().constant("Hello World");
+        from("direct:restGet")
+                .transform().constant("Hello World");
 
-        // from("direct:bye")
-        //         .transform().constant("Bye World");
-
+        from("direct:restPost")
+                .transform().constant("Hello World");
     }
 }

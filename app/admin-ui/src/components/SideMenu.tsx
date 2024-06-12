@@ -14,6 +14,7 @@ export function SideMenu() {
         <SideNavigation
             fixedItems={<><SideNavigationItem href="https://www.sap.com/index.html" icon="chain-link" target="_blank" text="External Link" /><SideNavigationItem icon="history" text="History" /></>}
             onSelectionChange={onSelectionChange}
+            collapsed={true}
             style={{ borderRadius: 0, border: 0, boxShadow: 'none' }}
         >
             <SideNavigationItem
@@ -21,6 +22,13 @@ export function SideMenu() {
                 text="Home"
                 id="users"
                 data-href="/"
+            />
+            <SideNavigationItem
+                expanded
+                icon="group"
+                text="Endpoints"
+                id="endpoints"
+                data-href="/endpoints"
             />
             <SideNavigationItem
                 expanded

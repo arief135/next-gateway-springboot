@@ -1,6 +1,6 @@
 import { Button, FlexBox, FlexBoxDirection, Icon, Input, Title, Toast } from "@ui5/webcomponents-react";
 import { useNavigate } from "react-router-dom";
-import { SyntheticEvent, useRef } from "react";
+import { BaseSyntheticEvent, SyntheticEvent, useRef, useState } from "react";
 import { login } from "./services/Auth.service";
 import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js"
 import "@ui5/webcomponents-icons/dist/account.js"
@@ -10,24 +10,30 @@ import axios from "axios";
 export default function Login() {
 
     const navigate = useNavigate()
-
-    const toast = useRef(null)
+    const [loginData, setLoginData] = useState({ username: '', password: '' })
 
     const onLogin = async (e: SyntheticEvent) => {
         e.preventDefault()
 
-        const username = (document.getElementById('username') as any).value
-        const password = (document.getElementById('password') as any).value
-
-        const loginResult = await login(username, password)
+        const loginResult = await login(loginData.username, loginData.password)
 
         if (loginResult.status == 200) {
             axios.defaults.auth = {
-                username: username,
-                password: password
+                username: loginData.username,
+                password: loginData.password
             }
             navigate('/')
         }
+    }
+
+    const onKeyUp = (e: BaseSyntheticEvent) => {
+        const newData = { ...loginData }
+        if (e.target.id == 'username') {
+            newData.username = e.target.value
+        } else {
+            newData.password = e.target.value
+        }
+        setLoginData(newData)
     }
 
     return (
@@ -45,6 +51,8 @@ export default function Login() {
                     style={{ marginBottom: '10px' }}
                     icon={<Icon name="account" />}
                     placeholder="Username"
+                    value={loginData.username}
+                    onKeyUp={onKeyUp}
                 />
                 <Input
                     id='password'
@@ -52,10 +60,11 @@ export default function Login() {
                     icon={<Icon name="key" />}
                     placeholder="Password"
                     type="Password"
+                    value={loginData.password}
+                    onKeyUp={onKeyUp}
                 />
 
                 <Button type="Submit" design="Emphasized" style={{ width: '210px' }}>Login</Button>
-                <Toast ref={toast}></Toast>
             </FlexBox>
         </form>
     )

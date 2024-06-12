@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.AuthenticationException;
@@ -19,15 +20,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.HeaderWriter;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.frameoptions.AllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
 import org.springframework.web.cors.CorsConfiguration;
 
 import id.apnv.nextgateway.entity.UserInfo;
 import id.apnv.nextgateway.service.UserInfoService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
+@OpenAPIDefinition(info = @Info(title = "Apply Default Global SecurityScheme in springdoc-openapi", version = "1.0.0"), security = {
+        @SecurityRequirement(name = "basicAuth") })
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "basicAuth", scheme = "basic")
 public class SecurityConfiguration {
 
     @Autowired
@@ -36,12 +50,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> 
-                    authorize
+                .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/**")
                         .authenticated()
                         .anyRequest()
-                        .permitAll()                )
+                        .permitAll())
                 .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthenticationEntryPoint() {
 
                     @Override
@@ -61,10 +74,16 @@ public class SecurityConfiguration {
                     return configuration;
 
                 }))
-                .rememberMe(remember -> 
-                    remember.alwaysRemember(true)
-                        .tokenValiditySeconds(30*5)
-                );
+                .rememberMe(remember -> remember.alwaysRemember(true)
+                        .tokenValiditySeconds(30 * 5));
+
+        // for H2 Console
+        http.headers(header -> {
+            HeaderWriter headerWriter = new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN);
+            header.addHeaderWriter(headerWriter);
+        });
+
+        // .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
