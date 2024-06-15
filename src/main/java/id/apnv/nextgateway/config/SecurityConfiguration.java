@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,14 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.HeaderWriter;
-import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
-import org.springframework.security.web.header.writers.frameoptions.AllowFromStrategy;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
 import org.springframework.web.cors.CorsConfiguration;
 
-import id.apnv.nextgateway.entity.UserInfo;
-import id.apnv.nextgateway.service.UserInfoService;
+import id.apnv.nextgateway.entity.user.User;
+import id.apnv.nextgateway.service.UserService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -45,7 +41,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfiguration {
 
     @Autowired
-    private UserInfoService userInfoService;
+    private UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -99,12 +95,12 @@ public class SecurityConfiguration {
             @Override
             public UserDetails loadUserByUsername(String username) {
 
-                Optional<UserInfo> byId = userInfoService.getById(username);
+                Optional<User> byId = userService.getById(username);
                 if (!byId.isPresent()) {
                     throw new UsernameNotFoundException(username);
                 }
 
-                return User.withUsername(username)
+                return org.springframework.security.core.userdetails.User.withUsername(username)
                         .password(byId.get().getPassword())
                         .roles()
                         .build();

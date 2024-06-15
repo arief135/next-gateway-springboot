@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
+import id.apnv.nextgateway.entity.base.ManagedEntity;
+
 public abstract class CrudService<T, ID> {
 
     private CrudRepository<T, ID> crudRepository;
@@ -21,10 +23,16 @@ public abstract class CrudService<T, ID> {
     }
 
     public T create(T entity) {
+        if (entity instanceof ManagedEntity) {
+            ((ManagedEntity) entity).setCreateDefaults();
+        }
         return crudRepository.save(entity);
     }
 
     public T update(ID id, T entity) {
+        if (entity instanceof ManagedEntity) {
+            ((ManagedEntity) entity).setChangeDefaults();
+        }
         return crudRepository.save(entity);
     }
 

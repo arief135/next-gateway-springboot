@@ -1,4 +1,4 @@
-package id.apnv.nextgateway.entity;
+package id.apnv.nextgateway.entity.base;
 
 import java.sql.Timestamp;
 

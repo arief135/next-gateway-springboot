@@ -3,8 +3,9 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import Layout from './Layout';
 import '@ui5/webcomponents-react/dist/Assets';
-import { User } from './components/User';
-import { Endpoint, EndpointCreate } from './components/Endpoint';
+import { Endpoint } from './components/endpoints/Endpoint';
+import { User } from './components/users/User';
+import { EndpointCreate } from './components/endpoints/EndpointCreate';
 
 const defaultTheme = "sap_horizon";
 

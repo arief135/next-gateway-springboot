@@ -1,3 +1,1 @@
-export interface EndpointType {
-    name: string
-}
+export * from 'next-gateway'

@@ -36,6 +36,16 @@ export default function Login() {
         setLoginData(newData)
     }
 
+    const onKeyDown = (e: BaseSyntheticEvent) => {
+        const newData = { ...loginData }
+        if (e.target.id == 'username') {
+            newData.username = e.target.value
+        } else {
+            newData.password = e.target.value
+        }
+        setLoginData(newData)
+    }
+
     return (
         <form onSubmit={onLogin}>
             <FlexBox
@@ -53,6 +63,7 @@ export default function Login() {
                     placeholder="Username"
                     value={loginData.username}
                     onKeyUp={onKeyUp}
+                    onKeyDown={onKeyDown}
                 />
                 <Input
                     id='password'
@@ -62,6 +73,7 @@ export default function Login() {
                     type="Password"
                     value={loginData.password}
                     onKeyUp={onKeyUp}
+                    onKeyDown={onKeyDown}
                 />
 
                 <Button type="Submit" design="Emphasized" style={{ width: '210px' }}>Login</Button>

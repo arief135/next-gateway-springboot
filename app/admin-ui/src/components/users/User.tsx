@@ -1,8 +1,9 @@
 import { Table, TableColumn, TableRow, TableCell } from "@ui5/webcomponents-react";
-import { getUsers } from "../services/User.service";
 import { useQuery } from "react-query";
+import { getUsers } from "../../services/User.service";
+import { ListContainer } from "../common/ListContainer";
 
-export function User() {
+function UserTable() {
 
     const query = useQuery({
         queryKey: 'user',
@@ -45,4 +46,14 @@ export function User() {
             </Table>
         )
     }
+}
+
+export function User() {
+    return (
+        <ListContainer
+            title="Users"
+            subtitle="List of all users"
+            content={<UserTable />}
+        />
+    )
 }

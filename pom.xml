@@ -20,6 +20,13 @@
     </properties>
     <dependencies>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -192,6 +199,36 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>3.2.1263</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classes>
+                        <class>id.apnv.nextgateway.entity.endpoint.Endpoint</class>
+                        <class>id.apnv.nextgateway.entity.endpoint.EndpointConfigurationFirebase</class>
+                        <class>id.apnv.nextgateway.entity.endpoint.EndpointConfigurationHTTP</class>
+                        <class>id.apnv.nextgateway.entity.endpoint.EndpointConfigurationSAPOData</class>
+                        <class>id.apnv.nextgateway.entity.endpoint.EndpointConfigurationTelegram</class>
+                        <class>id.apnv.nextgateway.api.payload.LoginDto</class>
+                    </classes>
+                    <outputFile>node_modules/next-gateway/index.d.ts</outputFile>
+                    <outputKind>module</outputKind>
+                </configuration>
+            </plugin>
+
+
         </plugins>
     </build>
 

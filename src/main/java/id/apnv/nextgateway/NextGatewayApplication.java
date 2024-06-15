@@ -1,22 +1,29 @@
 package id.apnv.nextgateway;
 
-import java.sql.Timestamp;
+import id.apnv.nextgateway.entity.endpoint.EndpointRepository;
+import id.apnv.nextgateway.entity.user.UserAssignmentRepository;
+import id.apnv.nextgateway.entity.user.UserRepository;
+import id.apnv.nextgateway.entity.user.UserRoleRepository;
+import id.apnv.nextgateway.startup.DataSeed;
+import id.apnv.nextgateway.startup.Runner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import id.apnv.nextgateway.entity.UserInfo;
-import id.apnv.nextgateway.entity.UserInfoRepository;
 
 @SpringBootApplication
 public class NextGatewayApplication {
 
     @Autowired
-    private UserInfoRepository userInfoRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private UserAssignmentRepository userAssignmentRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(NextGatewayApplication.class, args);
@@ -25,18 +32,8 @@ public class NextGatewayApplication {
     @Bean
     public ApplicationRunner applicationRunner() {
         return (args) -> {
-            // create default user if not exists
-            UserInfo userInfo = new UserInfo();
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            userInfo.setActive(true);
-            userInfo.setPassword(bCryptPasswordEncoder.encode("admin"));
-            userInfo.setUsername("admin");
-            userInfo.setCreateAt(new Timestamp(System.currentTimeMillis()));
-            userInfo.setCreatedBy("SYSTEM");
-
-            if (!userInfoRepository.existsById(userInfo.getUsername())) {
-                userInfoRepository.save(userInfo);
-            }
+            Runner dataSeeder = new DataSeed(userRepository, userRoleRepository, userAssignmentRepository);
+            dataSeeder.run();
         };
     }
 
