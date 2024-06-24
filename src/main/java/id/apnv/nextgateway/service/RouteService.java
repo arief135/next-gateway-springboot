@@ -8,6 +8,7 @@ import org.apache.camel.spring.SpringCamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import id.apnv.nextgateway.camel.HttpRouteBuilder;
 import id.apnv.nextgateway.camel.TelegramRouteBuilder;
 import id.apnv.nextgateway.entity.endpoint.Endpoint;
 import id.apnv.nextgateway.entity.endpoint.EndpointType;
@@ -28,6 +29,28 @@ public class RouteService {
             routes.add(route);
         }
 
+        if (endpoint.getType() == EndpointType.HTTP) {
+            Route route = new Route();
+            route.setName("rest:get:" + endpoint.getName());
+            routes.add(route);
+
+            route = new Route();
+            route.setName("rest:post:" + endpoint.getName());
+            routes.add(route);
+
+            route = new Route();
+            route.setName("rest:put:" + endpoint.getName());
+            routes.add(route);
+
+            route = new Route();
+            route.setName("rest:patch:" + endpoint.getName());
+            routes.add(route);
+
+            route = new Route();
+            route.setName("rest:delete:" + endpoint.getName());
+            routes.add(route);
+        }
+
         return routes;
     }
 
@@ -37,6 +60,9 @@ public class RouteService {
         if (camelRoute == null) {
             if (endpoint.getType() == EndpointType.TELEGRAM) {
                 camelContext.addRoutes(new TelegramRouteBuilder(endpoint, route));
+            }
+            if (endpoint.getType() == EndpointType.HTTP) {
+                camelContext.addRoutes(new HttpRouteBuilder(endpoint, route));
             }
         } else {
             if (camelContext instanceof SpringCamelContext) {

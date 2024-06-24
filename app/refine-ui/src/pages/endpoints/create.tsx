@@ -2,13 +2,13 @@ import { Create, useForm, useSelect } from "@refinedev/antd";
 import MDEditor from "@uiw/react-md-editor";
 import { Form, Input, Select } from "antd";
 import { useState } from "react";
-import { EndpointConfigurationTelegram, EndpointType } from "../../types";
+import { EndpointConfigurationHTTP, EndpointConfigurationTelegram, EndpointType } from "../../types";
 import { useConfigTypeSelector } from "./common";
 
 export const EndpointCreate = () => {
     const { formProps, saveButtonProps } = useForm({});
 
-    const {configType, configTypeProps} = useConfigTypeSelector('HTTP')
+    const { configType, configTypeProps } = useConfigTypeSelector('HTTP')
 
     return (
         <Create saveButtonProps={saveButtonProps}>
@@ -49,8 +49,73 @@ export const EndpointCreate = () => {
 
 const EndpointCreateConfig = ({ type }: { type: EndpointType }) => {
     if (type == 'HTTP') {
+        const [httpConfig, setHttpConfig] = useState<EndpointConfigurationHTTP>({ authType: 'NONE' } as EndpointConfigurationHTTP);
         return (
             <>
+                <Form.Item
+                    label={"Destination"}
+                    name={["configHTTP", "destination"]}
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                    style={{ width: 600 }}
+                >
+                    <Input value={httpConfig.destination} />
+                </Form.Item>
+
+                <Form.Item
+                    label={"Authentication"}
+                    name={["configHTTP", "authType"]}
+                    rules={[
+                        {
+                            required: false,
+                        },
+                    ]}
+                    style={{ width: 240 }}
+                    initialValue={httpConfig.authType}
+                >
+                    <Select
+                        options={[
+                            { title: 'No Auth', value: 'NONE' },
+                            { title: 'Basic Auth', value: 'BASIC' },
+                        ]}
+                        onChange={(e) => setHttpConfig({ ...httpConfig, authType: e })}
+                    />
+                </Form.Item>
+
+                {httpConfig.authType == 'BASIC' ?
+                    <>
+                        <Form.Item
+                            label={"User"}
+                            name={["configHTTP", "authBasicUser"]}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{ width: 240 }}
+                        >
+                            <Input value={httpConfig.authBasicUser} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label={"Password"}
+                            name={["configHTTP", "authBasicPasswod"]}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{ width: 240 }}
+                        >
+                            <Input value={httpConfig.authBasicPasswod} type="Password" />
+                        </Form.Item>
+                    </>
+                    :
+                    <></>
+                }
             </>
         )
     }
@@ -73,7 +138,7 @@ const EndpointCreateConfig = ({ type }: { type: EndpointType }) => {
                 </Form.Item>
                 <Form.Item
                     label={"Bot Token"}
-                    name={["configTelegram","botToken"]}
+                    name={["configTelegram", "botToken"]}
                     rules={[
                         {
                             required: true,
@@ -84,7 +149,7 @@ const EndpointCreateConfig = ({ type }: { type: EndpointType }) => {
                 </Form.Item>
                 <Form.Item
                     label={"Chat ID"}
-                    name={["configTelegram","chatId"]}
+                    name={["configTelegram", "chatId"]}
                     rules={[
                         {
                             required: true,

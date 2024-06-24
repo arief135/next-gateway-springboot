@@ -1,6 +1,6 @@
 import { Edit, useForm } from "@refinedev/antd";
-import { Form, Input } from "antd";
-import { Endpoint, EndpointConfigurationTelegram, EndpointType } from "../../types";
+import { Form, Input, Select } from "antd";
+import { Endpoint, EndpointConfigurationHTTP, EndpointConfigurationTelegram, EndpointType } from "../../types";
 import { useState } from "react";
 import { useConfigTypeSelector } from "./common";
 
@@ -35,23 +35,88 @@ export const EndpointEdit = () => {
                     <Input disabled={true} />
                 </Form.Item>
 
-                {queryResult?.isSuccess ? <EndpointEditConfig type={endpointData.type} /> : null}
+                {queryResult?.isSuccess ? <EndpointEditConfig data={endpointData} /> : null}
 
             </Form>
         </Edit>
     );
 };
 
-const EndpointEditConfig = ({ type }: { type: EndpointType }) => {
-    if (type == 'HTTP') {
+const EndpointEditConfig = ({ data }: { data: Endpoint }) => {
+    if (data.type == 'HTTP') {
+
+        const [authType, setAuthType] = useState(data.configHTTP.authType)
+
         return (
             <>
+                <Form.Item
+                    label={"Destination"}
+                    name={["configHTTP", "destination"]}
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                    style={{ width: 600 }}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label={"Authentication"}
+                    name={["configHTTP", "authType"]}
+                    rules={[
+                        {
+                            required: false,
+                        },
+                    ]}
+                    style={{ width: 240 }}
+                >
+                    <Select
+                        options={[
+                            { title: 'No Auth', value: 'NONE' },
+                            { title: 'Basic Auth', value: 'BASIC' },
+                        ]}
+                        onChange={(e) => setAuthType(e)}
+                    />
+                </Form.Item>
+
+                {authType == 'BASIC' ?
+                    <>
+                        <Form.Item
+                            label={"User"}
+                            name={["configHTTP", "authBasicUser"]}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{ width: 240 }}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            label={"Password"}
+                            name={["configHTTP", "authBasicPasswod"]}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{ width: 240 }}
+                        >
+                            <Input type="Password" />
+                        </Form.Item>
+                    </>
+                    :
+                    <></>
+                }
             </>
         )
     }
 
-    if (type == 'TELEGRAM') {
-        const [telegramConfig, setTelegramConfig] = useState<EndpointConfigurationTelegram>({} as EndpointConfigurationTelegram);
+    if (data.type == 'TELEGRAM') {
 
         return (
             <>
@@ -64,7 +129,7 @@ const EndpointEditConfig = ({ type }: { type: EndpointType }) => {
                         },
                     ]}
                 >
-                    <Input value={telegramConfig.botId} />
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     label={"Bot Token"}
@@ -75,7 +140,7 @@ const EndpointEditConfig = ({ type }: { type: EndpointType }) => {
                         },
                     ]}
                 >
-                    <Input value={telegramConfig.botToken} />
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     label={"Chat ID"}
@@ -86,7 +151,7 @@ const EndpointEditConfig = ({ type }: { type: EndpointType }) => {
                         },
                     ]}
                 >
-                    <Input value={telegramConfig.chatId} />
+                    <Input />
                 </Form.Item>
             </>
         )

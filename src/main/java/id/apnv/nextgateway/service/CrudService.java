@@ -36,6 +36,13 @@ public abstract class CrudService<T, ID> {
         return crudRepository.save(entity);
     }
 
+    public T partialUpdate(ID id, T oldEntity, T newEntity) {
+        if (oldEntity instanceof ManagedEntity) {
+            ((ManagedEntity) oldEntity).setChangeDefaults();
+        }
+        return crudRepository.save(oldEntity);
+    }
+
     public void delete(ID id) {
         crudRepository.deleteById(id);
     }

@@ -45,25 +45,46 @@ export const EndpointShow = () => {
 
     let configElement = null
     let activateButton = null
-    if (queryResult.isSuccess && record.type == 'TELEGRAM') {
-        console.log('Hello')
-        configElement = <>
-            <Title level={5}>{"Bot ID"}</Title>
-            <TextField value={record?.configTelegram.botId} />
-            <Title level={5}>{"Bot Token"}</Title>
-            <TextField value={record?.configTelegram.botToken} />
-            <Title level={5}>{"Chat ID"}</Title>
-            <TextField value={record?.configTelegram.chatId} />
-        </>
 
+    if (queryResult.isSuccess) {
         if (record.active) {
             activateButton = <Button onClick={() => deactivate(record)}>Deactivate</Button>
         } else {
             activateButton = <Button onClick={() => activate(record)}>Activate</Button>
         }
 
-    }
+        if (record.type == 'HTTP') {
+            configElement = <>
+                <Title level={5}>{"Destination"}</Title>
+                <TextField value={record.configHTTP.destination} />
+                <Title level={5}>{"Authentication"}</Title>
+                <TextField value={record.configHTTP.authType} />
 
+                {record.configHTTP.authType == 'BASIC' ?
+                    <>
+                        <Title level={5}>{"User"}</Title>
+                        <TextField value={record.configHTTP.authBasicUser} />
+                        <Title level={5}>{"Password"}</Title>
+                        <TextField value={'*****'} />
+                    </> :
+                    <></>
+                }
+            </>
+        }
+
+
+        if (record.type == 'TELEGRAM') {
+            configElement = <>
+                <Title level={5}>{"Bot ID"}</Title>
+                <TextField value={record?.configTelegram.botId} />
+                <Title level={5}>{"Bot Token"}</Title>
+                <TextField value={record?.configTelegram.botToken} />
+                <Title level={5}>{"Chat ID"}</Title>
+                <TextField value={record?.configTelegram.chatId} />
+            </>
+
+        }
+    }
 
     return (
         <Show isLoading={isLoading}

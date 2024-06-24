@@ -28,6 +28,27 @@ public class EndpointService extends CrudService<Endpoint, String> {
         return super.create(entity);
     }
 
+    @Override
+    public Endpoint partialUpdate(String id, Endpoint oldEntity, Endpoint newEntity) {
+        switch (oldEntity.getType()) {
+            case HTTP:
+                oldEntity.getConfigHTTP().setDestination(newEntity.getConfigHTTP().getDestination());
+                oldEntity.getConfigHTTP().setAuthBasicPasswod(newEntity.getConfigHTTP().getAuthBasicPasswod());
+                oldEntity.getConfigHTTP().setAuthBasicUser(newEntity.getConfigHTTP().getAuthBasicUser());
+                oldEntity.getConfigHTTP().setAuthType(newEntity.getConfigHTTP().getAuthType());
+                break;
+
+            case TELEGRAM:
+                oldEntity.getConfigTelegram().setBotId(newEntity.getConfigTelegram().getBotId());
+                oldEntity.getConfigTelegram().setBotToken(newEntity.getConfigTelegram().getBotToken());
+                oldEntity.getConfigTelegram().setChatId(newEntity.getConfigTelegram().getChatId());
+                break;
+            default:
+                break;
+        }
+        return super.partialUpdate(id, oldEntity, newEntity);
+    }
+
     public boolean activateEndpoint(String id, boolean status) {
         var opt = this.getById(id);
         if (!opt.isPresent()) {

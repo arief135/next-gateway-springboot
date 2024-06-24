@@ -15,13 +15,21 @@ public abstract class ManagedEntity {
     private String changedBy;
 
     public void setCreateDefaults() {
-        createdAt = changedAt = new Timestamp(System.currentTimeMillis());
-        createdBy = changedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        setCreateDefaults(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    public void setCreateDefaults(String principal) {
+        createdAt = new Timestamp(System.currentTimeMillis());
+        createdBy = principal;
     }
 
     public void setChangeDefaults() {
+        setChangeDefaults(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    public void setChangeDefaults(String principal) {
         changedAt = new Timestamp(System.currentTimeMillis());
-        changedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        changedBy = principal;
     }
 
     public String getCreatedBy() {
@@ -36,24 +44,8 @@ public abstract class ManagedEntity {
         return changedBy;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setChangedAt(Timestamp changedAt) {
-        this.changedAt = changedAt;
-    }
-
-    public void setChangedBy(String changedBy) {
-        this.changedBy = changedBy;
-    }
-
     public Timestamp getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
     }
 
 }
