@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,8 +44,16 @@ public class SecurityConfiguration {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Environment environment;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        if (Arrays.asList(environment.getActiveProfiles()).indexOf("dev") >= 0) {
+            return securityFilterChainDev(http);
+        }
+
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/**")
@@ -73,14 +82,29 @@ public class SecurityConfiguration {
                 .rememberMe(remember -> remember.alwaysRemember(true)
                         .tokenValiditySeconds(30 * 5));
 
+        return http.build();
+    }
+
+    private SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+
+        http.csrf(csrf -> csrf.disable());
+
+        http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(Arrays.asList("*"));
+            configuration.setAllowedMethods(Arrays.asList("*"));
+            configuration.setAllowedHeaders(Arrays.asList("*"));
+            return configuration;
+        }));
+
+
         // for H2 Console
         http.headers(header -> {
             HeaderWriter headerWriter = new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN);
             header.addHeaderWriter(headerWriter);
         });
-
-        // .formLogin(Customizer.withDefaults());
-
+        
         return http.build();
     }
 

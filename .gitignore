@@ -35,3 +35,6 @@ build/
 ## Nodejs App ###
 node_modules/
 app/*/node_modules/
+
+# Others
+.DS_Store

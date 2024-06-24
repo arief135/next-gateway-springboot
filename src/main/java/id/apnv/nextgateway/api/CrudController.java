@@ -50,7 +50,7 @@ public abstract class CrudController<T, ID> {
         return service.getById(id)
                 .map(entity -> {
                     // Apply partial updates to entity here
-                    service.update(id, entity);
+                    service.update(id, updates);
                     return new ResponseEntity<>(entity, HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

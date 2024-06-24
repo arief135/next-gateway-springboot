@@ -5,17 +5,27 @@ import {
 } from "@ui5/webcomponents-react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createEndpoint } from "../../services/Endpoint.service";
-import { Endpoint, EndpointConfigurationTelegram, EndpointType, EndpointConfiguration } from 'next-gateway'
 import { ObjectContainer } from "../common/ObjectContainer";
 import { FormContainer } from "../common/FormContainer";
+import { Endpoint, EndpointConfigurationTelegram, EndpointType } from "../../types";
+import { createEndpoint } from "../../services/Endpoint.service";
+
+const initialConfig: Endpoint = {
+    name: "",
+    type: "FIREBASE",
+    active: false,
+    configTelegram: {
+        botToken: "",
+        botId: "",
+        chatId: "",
+    },
+} as Endpoint
 
 export function EndpointCreate() {
 
     const toast = useRef(null);
     const navigate = useNavigate();
-    const [endpoint, setEndpoint] = useState<Endpoint>({name:'',type:'FIREBASE'} as Endpoint)
-    const [endpointConfig, setEndpointConfig] = useState<EndpointConfiguration>({} as EndpointConfiguration)
+    const [endpoint, setEndpoint] = useState<Endpoint>(initialConfig as Endpoint)
     const [toastMessage, setToastMessage] = useState("")
 
     const createNewEndpoint = () => {
@@ -37,9 +47,7 @@ export function EndpointCreate() {
             <ObjectContainer
                 content={<EndpointCreateForm
                     endpoint={endpoint}
-                    endpointConfig={endpointConfig}
                     onChangeEndpoint={(e) => setEndpoint(e)}
-                    onChangeEndpointConfig={(e) => setEndpointConfig(e)}
                 />}
                 breadcrumbs={<Breadcrumbs>
                     <BreadcrumbsItem>Endpoint</BreadcrumbsItem>
@@ -57,9 +65,7 @@ export function EndpointCreate() {
 
 type EndpointCreateFormPropType = {
     endpoint: Endpoint
-    endpointConfig: EndpointConfiguration
     onChangeEndpoint: (e: Endpoint) => void
-    onChangeEndpointConfig: (e: EndpointConfiguration) => void
 }
 
 function EndpointCreateForm(props: EndpointCreateFormPropType) {
@@ -89,8 +95,8 @@ function EndpointCreateForm(props: EndpointCreateFormPropType) {
         case 'TELEGRAM':
             endpointConfigElement =
                 <EndpointConfigurationFormTelegram
-                    config={props.endpointConfig as EndpointConfigurationTelegram}
-                    onChange={e => props.onChangeEndpointConfig(e)} />
+                    config={props.endpoint.configTelegram as EndpointConfigurationTelegram}
+                    onChange={e => props.onChangeEndpoint({ ...props.endpoint, configTelegram: e })} />
             break;
 
         default:
@@ -110,9 +116,9 @@ function EndpointCreateForm(props: EndpointCreateFormPropType) {
                         <FormItem label="Type">
                             <Select
                                 onChange={e => {
-                                        // setEndpointType(e.target.value as EndpointType)
-                                        props.onChangeEndpoint({...props.endpoint, type: e.target.value as EndpointType})
-                                    }
+                                    // setEndpointType(e.target.value as EndpointType)
+                                    props.onChangeEndpoint({ ...props.endpoint, type: e.target.value as EndpointType })
+                                }
                                 }>
                                 {endpointElements}
                             </Select>

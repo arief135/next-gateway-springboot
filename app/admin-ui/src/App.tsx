@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import Layout from './Layout';
 import '@ui5/webcomponents-react/dist/Assets';
-import { Endpoint } from './components/endpoints/Endpoint';
+import { Endpoints } from './components/endpoints/Endpoint';
 import { User } from './components/users/User';
 import { EndpointCreate } from './components/endpoints/EndpointCreate';
 
@@ -29,7 +29,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route path='users' element={<User />} />
-                    <Route path='endpoints' element={<Endpoint />} />
+                    <Route path='endpoints' element={<Endpoints />} />
                     <Route path='endpoints/create' element={<EndpointCreate />} />
                 </Route>
                 <Route path="/login" element={<Login />} />

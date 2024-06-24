@@ -42,7 +42,7 @@ public class DataSeed implements Runner {
             user.setActive(true);
             user.setPassword(bCryptPasswordEncoder.encode(u));
             user.setUsername(u);
-            user.setCreateAt(new Timestamp(System.currentTimeMillis()));
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             user.setCreatedBy("SYSTEM");
 
             UserAssignment userAssignment = new UserAssignment();

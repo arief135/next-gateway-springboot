@@ -34,12 +34,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-telegram-starter</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -58,6 +52,12 @@
 
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-telegram-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-jackson-starter</artifactId>
             <version>${camel.version}</version>
         </dependency>
@@ -68,6 +68,11 @@
             <version>${camel.version}</version>
         </dependency>
 
+	    <dependency>
+	        <groupId>org.apache.camel.springboot</groupId>
+	        <artifactId>camel-management-starter</artifactId>
+	        <version>${camel.version}</version>
+	    </dependency>
 
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
@@ -80,6 +85,12 @@
             <artifactId>camel-spring-boot-starter</artifactId>
             <version>${camel.version}</version>
         </dependency>
+
+        <dependency>
+	        <groupId>org.apache.camel.springboot</groupId>
+	        <artifactId>camel-console-starter</artifactId>
+	        <version>${camel.version}</version>
+	    </dependency>
 
 
         <dependency>
@@ -210,7 +221,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <phase>validate</phase>
+                        <phase>process-classes</phase>
                     </execution>
                 </executions>
                 <configuration>
