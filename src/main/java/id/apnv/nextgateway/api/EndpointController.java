@@ -67,7 +67,7 @@ public class EndpointController extends CrudController<Endpoint, String> {
 
     @PostMapping("/{id}/activate")
     public ResponseEntity<String> activate(@PathVariable String id) {
-        if (service.activateEndpoint(id, true)) {
+        if (service.activateEndpoint(id)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -76,7 +76,7 @@ public class EndpointController extends CrudController<Endpoint, String> {
 
     @PostMapping("/{id}/deactivate")
     public ResponseEntity<String> deactivate(@PathVariable String id) {
-        if (service.activateEndpoint(id, false)) {
+        if (service.deactivateEndpoint(id)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

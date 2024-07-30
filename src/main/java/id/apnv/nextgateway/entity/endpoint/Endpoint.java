@@ -1,15 +1,11 @@
 package id.apnv.nextgateway.entity.endpoint;
 
-import java.util.Set;
-
 import id.apnv.nextgateway.entity.base.ManagedEntity;
-import id.apnv.nextgateway.entity.route.Route;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -26,6 +22,13 @@ public class Endpoint extends ManagedEntity {
 
     private boolean active;
 
+    /**
+     * String in the format 0 or 1
+     * GET POST PUT PATCH DELETE
+     * For example: 00110 means GET/POST/DELETE not allowed, PUT/PATCH allowed
+     */
+    private String allowedMethod;
+
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private EndpointConfigurationFirebase configFirebase;
 
@@ -38,6 +41,4 @@ public class Endpoint extends ManagedEntity {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private EndpointConfigurationTelegram configTelegram;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Route> routes;
 }

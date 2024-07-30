@@ -1,31 +1,25 @@
 package id.apnv.nextgateway.service;
 
-import java.util.Set;
-
+import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.spring.SpringCamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import id.apnv.nextgateway.camel.NextRouteBuilder;
 import id.apnv.nextgateway.entity.endpoint.Endpoint;
 import id.apnv.nextgateway.entity.endpoint.EndpointRepository;
-import id.apnv.nextgateway.entity.route.Route;
+import id.apnv.nextgateway.entity.endpoint.EndpointType;
 
 @Service
 public class EndpointService extends CrudService<Endpoint, String> {
 
     @Autowired
-    private RouteService routeService;
+    private CamelContext camelContext;
 
     public EndpointService(EndpointRepository endpointRepository) {
         super(endpointRepository);
-    }
-
-    @Override
-    public Endpoint create(Endpoint entity) {
-
-        Set<Route> routes = routeService.createRoutes(entity);
-        entity.setRoutes(routes);
-
-        return super.create(entity);
     }
 
     @Override
@@ -49,61 +43,75 @@ public class EndpointService extends CrudService<Endpoint, String> {
         return super.partialUpdate(id, oldEntity, newEntity);
     }
 
-    public boolean activateEndpoint(String id, boolean status) {
+    public boolean activateEndpoint(String id) {
         var opt = this.getById(id);
+
         if (!opt.isPresent()) {
             return false;
         }
 
-        if (opt.get().isActive() && status) {
+        Endpoint endpoint = opt.get();
+
+        Route camelRoute = camelContext.getRoute(endpoint.getName());
+
+        try {
+
+            if (camelRoute == null) {
+                if (endpoint.getType() == EndpointType.TELEGRAM) {
+                    camelContext.addRoutes(new RouteBuilder() {
+                        @Override
+                        public void configure() throws Exception {
+                            NextRouteBuilder.configTelegram(this, endpoint);
+                        }
+                    });
+                }
+                if (endpoint.getType() == EndpointType.HTTP) {
+                    camelContext.addRoutes(new RouteBuilder() {
+                        @Override
+                        public void configure() throws Exception {
+                            NextRouteBuilder.configHttp(this, endpoint);
+                        }
+                    });
+                }
+            } else {
+                if (camelContext instanceof SpringCamelContext) {
+                    SpringCamelContext springCamelContext = (SpringCamelContext) camelContext;
+                    springCamelContext.startRoute(camelRoute.getId());
+                }
+            }
+
+        } catch (Exception e) {
             return false;
         }
 
-        if (!opt.get().isActive() && !status) {
-            return false;
-        }
-
-        var endpoint = opt.get();
-        endpoint.setActive(status);
-
-        boolean camelStatus = false;
-
-        if (status) {
-            camelStatus = endpoint
-                    .getRoutes()
-                    .stream()
-                    .map(r -> {
-                        try {
-                            routeService.activateRoute(endpoint, r);
-                            return true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    })
-                    .allMatch(p -> p);
-
-        } else {
-            camelStatus = endpoint
-                    .getRoutes()
-                    .stream()
-                    .map(r -> {
-                        try {
-                            routeService.deactivateRoute(endpoint, r);
-                            return true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    })
-                    .allMatch(p -> p);
-        }
-
-        if (camelStatus) {
-            this.update(id, endpoint);
-        }
+        endpoint.setActive(true);
 
         return true;
     }
 
+    public boolean deactivateEndpoint(String id) {
+        var opt = this.getById(id);
+
+        if (!opt.isPresent()) {
+            return false;
+        }
+
+        Endpoint endpoint = opt.get();
+
+        Route camelRoute = camelContext.getRoute(endpoint.getName());
+
+        if (camelContext instanceof SpringCamelContext) {
+            SpringCamelContext springCamelContext = (SpringCamelContext) camelContext;
+
+            try {
+                springCamelContext.stopRoute(camelRoute.getId());
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        endpoint.setActive(false);
+
+        return true;
+    }
 }

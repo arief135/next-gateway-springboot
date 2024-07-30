@@ -6,5 +6,8 @@
     "license": "ISC",
     "workspaces": [
         "app/*"
-    ]
+    ],
+    "scripts": {
+        "dev": "npm run dev --prefix app/refine-ui"
+    }
 }
