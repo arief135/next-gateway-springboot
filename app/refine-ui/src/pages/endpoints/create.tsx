@@ -1,18 +1,32 @@
-import { Create, useForm, useSelect } from "@refinedev/antd";
-import MDEditor from "@uiw/react-md-editor";
-import { Form, Input, Select } from "antd";
+import { Create, useForm } from "@refinedev/antd";
+import { Checkbox, Form, Input, Select } from "antd";
 import { useState } from "react";
 import { EndpointConfigurationHTTP, EndpointConfigurationTelegram, EndpointType } from "../../types";
 import { useConfigTypeSelector } from "./common";
 
 export const EndpointCreate = () => {
-    const { formProps, saveButtonProps } = useForm({});
 
+    const { formProps, saveButtonProps, onFinish } = useForm({});
     const { configType, configTypeProps } = useConfigTypeSelector('HTTP')
+
+    const handleOnFinish = (values: any) => {
+        const allowedMethodValues = values['allowedMethod'] as number[]
+        let allowedMethod = ''
+
+        for (let i = 0; i < 5; i++) {
+            if (allowedMethodValues.indexOf(i) >= 0) {
+                allowedMethod += '1'
+            } else {
+                allowedMethod += '0'
+            }
+        }
+
+        onFinish({ ...values, allowedMethod });
+    }
 
     return (
         <Create saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical">
+            <Form {...formProps} layout="vertical" onFinish={handleOnFinish}>
                 <Form.Item
                     label={"Name"}
                     name={["name"]}
@@ -25,6 +39,25 @@ export const EndpointCreate = () => {
                     style={{ width: 240 }}
                 >
                     <Input />
+                </Form.Item>
+                <Form.Item
+                    label='Allowed Method'
+                    name='allowedMethod'
+                    rules={[{ required: true }]}
+                    initialValue={[0]}
+                >
+                    <Checkbox.Group
+                        options={
+                            [
+                                { label: 'GET', value: 0 },
+                                { label: 'POST', value: 1 },
+                                { label: 'PUT', value: 2 },
+                                { label: 'PATCH', value: 3 },
+                                { label: 'DELETE', value: 4 },
+                            ]
+                        }
+                    />
+
                 </Form.Item>
                 <Form.Item
                     label={"Type"}
