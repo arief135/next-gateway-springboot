@@ -7,6 +7,7 @@ import lombok.Setter;
 @Entity @Getter @Setter
 public class EndpointConfigurationHTTP extends EndpointConfiguration {
     private String destination;
+    private String httpMethod;
     private String authType;
     private String authBasicUser;
     private String authBasicPasswod;
